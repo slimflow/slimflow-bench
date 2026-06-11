@@ -1,0 +1,31 @@
+services:
+  gateway:
+    image: ghcr.io/slimflow/slimflow:latest
+    entrypoint: ["/usr/local/bin/gateway"]
+    command: ["--addr", ":8080", "--targets", "http://node1:8081,http://node2:8082,http://node3:8083"]
+    ports: ["8080:8080"]
+    networks: [bench]
+    depends_on: [node1, node2, node3]
+
+  node1:
+    image: ghcr.io/slimflow/slimflow:latest
+    entrypoint: ["/usr/local/bin/node"]
+    command: ["--port", "8081", "--capacity", "50", "--latency-ms", "10"]
+    networks: [bench]
+
+  node2:
+    image: ghcr.io/slimflow/slimflow:latest
+    entrypoint: ["/usr/local/bin/node"]
+    command: ["--port", "8082", "--capacity", "50", "--latency-ms", "10"]
+    ports: ["8082:8082"]
+    networks: [bench]
+
+  node3:
+    image: ghcr.io/slimflow/slimflow:latest
+    entrypoint: ["/usr/local/bin/node"]
+    command: ["--port", "8083", "--capacity", "50", "--latency-ms", "10"]
+    networks: [bench]
+
+networks:
+  bench:
+    driver: bridge
